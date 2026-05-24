@@ -2,49 +2,19 @@
 
 Production-style Linux infrastructure lab focused on system administration, networking, reverse proxy configuration, service management, security hardening, logging, and troubleshooting.
 
-This project started as a foundational Linux and networking lab and evolved into a more complete infrastructure practice environment designed to simulate real-world support, DevOps, and SRE scenarios using multiple Linux virtual machines.
-
 ---
 
 ## Overview
 
-The goal of this project is to build, document, and troubleshoot a small production-style Linux environment using Ubuntu Server virtual machines.
+This project simulates a real-world multi-node Linux environment using Ubuntu Server virtual machines. It started as a foundational Linux and networking lab and evolved into a complete infrastructure practice environment designed to reflect Support, DevOps, and SRE scenarios.
 
-The lab demonstrates how different infrastructure components interact in a controlled environment:
-
-- A client machine used to test connectivity and application access
-- A reverse proxy server using Nginx
-- A backend application server running a simple Python web service
-- Optional logging and monitoring extensions
-- Network segmentation and controlled access between nodes
-
-This project focuses on practical infrastructure skills instead of only theoretical concepts. It is designed to show hands-on experience with Linux administration, networking, service configuration, and operational troubleshooting.
-
----
-
-## Project Objectives
-
-The main objectives of this lab are to:
-
-- Build a multi-node Linux environment using virtual machines
-- Configure static networking and host resolution
-- Secure remote access using SSH keys
-- Deploy a backend Python web application
-- Configure Nginx as a reverse proxy
-- Add a `/health` endpoint for service health checks
-- Manage Linux services using `systemd`
-- Apply basic firewall rules
-- Configure logging and review service logs
-- Practice troubleshooting using real Linux commands
-- Document the architecture and operational procedures clearly
+The lab demonstrates how infrastructure components interact end-to-end — from a client making a request, through a reverse proxy, to a backend application — with security, logging, and observability built in.
 
 ---
 
 ## Architecture
 
-The lab uses a multi-VM architecture.
-
-```text
+```
 +----------------+
 | Client VM      |
 | Test requester |
@@ -68,122 +38,141 @@ The lab uses a multi-VM architecture.
 +----------------+
 ```
 
-## Main Components
-
-### Client VM
-
-The Client VM simulates an external requester or user machine.
-
-It is used for:
-
-- Testing DNS or local host resolution
-- Sending HTTP requests with `curl`
-- Validating access to the reverse proxy
-- Confirming whether backend services are properly exposed or restricted
+| VM | Role | Key Services |
+|---|---|---|
+| client-vm | External requester | curl, ping, DNS resolution |
+| proxy-vm | Public entry point | Nginx, UFW, TLS, rate limiting |
+| app-vm | Backend application | Python app, systemd, health endpoint |
 
 ---
 
-### Proxy VM
+## What's Running
 
-The Proxy VM runs Nginx and acts as the public-facing entry point.
+### Network Connectivity
 
-It is responsible for:
+Multi-VM networking configured with static IPs, hostname resolution, and controlled access between nodes. All VMs verified with zero packet loss.
 
-- Receiving requests from the client
-- Forwarding traffic to the backend application server
-- Applying reverse proxy rules
-- Supporting logging
-- Preparing the environment for TLS termination
-- Applying rate limiting
-- Reducing direct exposure of the backend application
+![Connectivity](docs/screenshots/Connectivity_Works.png)
 
 ---
 
-### App VM
+### HTTP → HTTPS Redirect
 
-The App VM runs a simple Python web application.
+Nginx configured to redirect all HTTP traffic to HTTPS with a `301 Moved Permanently` response.
 
-It includes:
-
-- A basic web endpoint
-- A `/health` endpoint for health checks
-- A service managed with `systemd`
-- Application logs for troubleshooting
+![HTTP Redirect](docs/screenshots/HTTP_Redirect.png)
 
 ---
 
-### Optional Log VM
+### HTTPS Working
 
-The optional Log VM can be used as a future extension for centralized logging.
+TLS termination configured on the proxy. Client receives the backend application response over HTTPS.
 
-Potential use cases:
+![HTTPS Working](docs/screenshots/HTTPS_working.png)
 
-- Store logs from the proxy and application servers
-- Practice log forwarding
-- Simulate operational log review
-- Prepare the lab for monitoring and observability improvements
+---
+
+### Backend Application — Direct Access
+
+Python web application running on the App VM, serving responses with hostname, client IP, and timestamp. Accessible internally on port 8080.
+
+![Direct Backend Test](docs/screenshots/Direct_backend_test.png)
+
+---
+
+### Nginx — Active & Running
+
+Nginx managed as a systemd service. Running with 4 worker processes and confirmed active since deployment.
+
+![Nginx Status](docs/screenshots/Nginx_Status.png)
+
+---
+
+### Application Service — systemd
+
+Python app deployed and managed with systemd. Service set to auto-start on boot and confirmed active.
+
+![App Status](docs/screenshots/App_Status.png)
+
+---
+
+### Firewall Rules — UFW
+
+Firewall configured on the proxy VM. Only ports 22 (SSH), 80 (HTTP), and 443 (HTTPS) allowed inbound. All other incoming traffic denied by default.
+
+![Firewall Rules](docs/screenshots/Firewall_Rules.png)
+
+---
+
+### Rate Limiting
+
+Nginx rate limiting configured and validated. Requests exceeding the threshold return `503 Service Unavailable`. Verified with a burst test from the client VM.
+
+![Rate Limiting](docs/screenshots/Rate_limiting_test.png)
+
+---
+
+### Nginx Access Logs
+
+Access logs reviewed using `tail -f` on the proxy VM. Logs capture client IP, HTTP method, path, status code, and response size — confirming both successful and rate-limited requests.
+
+![Nginx Logs](docs/screenshots/Nginx_Logs.png)
 
 ---
 
 ## Technologies Used
 
-- Ubuntu Server
-- Linux CLI
-- Bash
-- SSH
-- SSH key-based authentication
-- Nginx
-- Python
-- systemd
-- UFW / firewall basics
-- Netplan
-- TCP/IP networking
-- DNS / host resolution
-- HTTP / HTTPS
-- VirtualBox
-- Git
-- GitHub
-
----
-
-## Skills Demonstrated
-
-This project demonstrates hands-on skills in:
-
-- Linux system administration
-- User and permission management
-- File system navigation and ownership
-- SSH access and key-based authentication
-- Static IP configuration
-- Hostname and local DNS resolution
-- Network troubleshooting
-- Process and service management
-- Nginx reverse proxy configuration
-- Backend application deployment
-- Health check implementation
-- Firewall configuration
-- Log analysis
-- Troubleshooting methodology
-- Technical documentation
+| Category | Tools |
+|---|---|
+| OS | Ubuntu Server |
+| Web Server / Proxy | Nginx |
+| Backend | Python 3, systemd |
+| Security | UFW, SSH key-based auth, TLS |
+| Networking | TCP/IP, DNS/host resolution, Netplan, static IPs |
+| Scripting | Bash |
+| Version Control | Git, GitHub |
+| Virtualization | VirtualBox |
 
 ---
 
 ## Repository Structure
 
-```text
+```
 .
 ├── README.md
-├── docs/
-│   ├── architecture.md
-│   ├── setup-guide.md
-│   ├── system-guide.md
-│   ├── troubleshooting.md
-│   └── screenshots/
 ├── app/
-│   └── app.py
-├── nginx/
-│   └── reverse-proxy.conf
-├── systemd/
-│   └── app.service
-└── scripts/
-    └── health-check.sh
+│   └── app.py                    # Python backend application
+├── architecture/
+│   └── Architecture.md           # Network and component diagram
+├── configs/
+│   └── nginx-reverse-proxy.conf  # Nginx reverse proxy configuration
+├── docs/
+│   ├── setup-guide.md            # Step-by-step setup instructions
+├── screenshots/                  # Lab evidence and validation captures
+└── .gitignore
+```
+
+---
+
+## Skills Demonstrated
+
+- Linux system administration (Ubuntu Server)
+- Static IP and hostname configuration (Netplan)
+- SSH key-based authentication and access hardening
+- Nginx reverse proxy configuration
+- TLS termination and HTTP → HTTPS redirect
+- Rate limiting configuration and validation
+- UFW firewall rules (allow/deny by port)
+- Python application deployment with systemd
+- Service health monitoring (`systemctl status`)
+- Log analysis (`tail -f`, access log review)
+- Network troubleshooting (`ping`, `curl`, connectivity validation)
+- Multi-VM architecture design and documentation
+- Technical documentation and operational runbooks
+
+---
+
+## Author
+
+**Adrian Fonseca**
+[LinkedIn](https://linkedin.com/in/afc2806) · [GitHub](https://github.com/ODR3N) · [Portfolio](https://odr3n.github.io)
