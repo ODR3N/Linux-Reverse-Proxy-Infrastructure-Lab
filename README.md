@@ -52,7 +52,7 @@ The lab demonstrates how infrastructure components interact end-to-end — from 
 
 Multi-VM networking configured with static IPs, hostname resolution, and controlled access between nodes. All VMs verified with zero packet loss.
 
-![Connectivity](docs/screenshots/Connectivity_Works.png)
+![Connectivity](https://raw.githubusercontent.com/ODR3N/Linux-Reverse-Proxy-Infrastructure-Lab/main/screenshots/Connectivity%20Works.png)
 
 ---
 
@@ -60,7 +60,7 @@ Multi-VM networking configured with static IPs, hostname resolution, and control
 
 Nginx configured to redirect all HTTP traffic to HTTPS with a `301 Moved Permanently` response.
 
-![HTTP Redirect](docs/screenshots/HTTP_Redirect.png)
+![HTTP Redirect](https://raw.githubusercontent.com/ODR3N/Linux-Reverse-Proxy-Infrastructure-Lab/main/screenshots/HTTP%20Redirect.png)
 
 ---
 
@@ -68,7 +68,7 @@ Nginx configured to redirect all HTTP traffic to HTTPS with a `301 Moved Permane
 
 TLS termination configured on the proxy. Client receives the backend application response over HTTPS.
 
-![HTTPS Working](docs/screenshots/HTTPS_working.png)
+![HTTPS Working](https://raw.githubusercontent.com/ODR3N/Linux-Reverse-Proxy-Infrastructure-Lab/main/screenshots/HTTPS%20working.png)
 
 ---
 
@@ -76,7 +76,7 @@ TLS termination configured on the proxy. Client receives the backend application
 
 Python web application running on the App VM, serving responses with hostname, client IP, and timestamp. Accessible internally on port 8080.
 
-![Direct Backend Test](docs/screenshots/Direct_backend_test.png)
+![Direct Backend Test](https://raw.githubusercontent.com/ODR3N/Linux-Reverse-Proxy-Infrastructure-Lab/main/screenshots/Direct%20backend%20test.png)
 
 ---
 
@@ -84,7 +84,7 @@ Python web application running on the App VM, serving responses with hostname, c
 
 Nginx managed as a systemd service. Running with 4 worker processes and confirmed active since deployment.
 
-![Nginx Status](docs/screenshots/Nginx_Status.png)
+![Nginx Status](https://raw.githubusercontent.com/ODR3N/Linux-Reverse-Proxy-Infrastructure-Lab/main/screenshots/Nginx%20Status.png)
 
 ---
 
@@ -92,7 +92,7 @@ Nginx managed as a systemd service. Running with 4 worker processes and confirme
 
 Python app deployed and managed with systemd. Service set to auto-start on boot and confirmed active.
 
-![App Status](docs/screenshots/App_Status.png)
+![App Status](https://raw.githubusercontent.com/ODR3N/Linux-Reverse-Proxy-Infrastructure-Lab/main/screenshots/App%20Status.png)
 
 ---
 
@@ -100,7 +100,7 @@ Python app deployed and managed with systemd. Service set to auto-start on boot 
 
 Firewall configured on the proxy VM. Only ports 22 (SSH), 80 (HTTP), and 443 (HTTPS) allowed inbound. All other incoming traffic denied by default.
 
-![Firewall Rules](docs/screenshots/Firewall_Rules.png)
+![Firewall Rules](https://raw.githubusercontent.com/ODR3N/Linux-Reverse-Proxy-Infrastructure-Lab/main/screenshots/Firewall%20Rules.png)
 
 ---
 
@@ -108,7 +108,7 @@ Firewall configured on the proxy VM. Only ports 22 (SSH), 80 (HTTP), and 443 (HT
 
 Nginx rate limiting configured and validated. Requests exceeding the threshold return `503 Service Unavailable`. Verified with a burst test from the client VM.
 
-![Rate Limiting](docs/screenshots/Rate_limiting_test.png)
+![Rate Limiting](https://raw.githubusercontent.com/ODR3N/Linux-Reverse-Proxy-Infrastructure-Lab/main/screenshots/Rate%20limiting%20test.png)
 
 ---
 
@@ -116,7 +116,7 @@ Nginx rate limiting configured and validated. Requests exceeding the threshold r
 
 Access logs reviewed using `tail -f` on the proxy VM. Logs capture client IP, HTTP method, path, status code, and response size — confirming both successful and rate-limited requests.
 
-![Nginx Logs](docs/screenshots/Nginx_Logs.png)
+![Nginx Logs](https://raw.githubusercontent.com/ODR3N/Linux-Reverse-Proxy-Infrastructure-Lab/main/screenshots/Nginx%20Logs.png)
 
 ---
 
@@ -148,7 +148,7 @@ Access logs reviewed using `tail -f` on the proxy VM. Logs capture client IP, HT
 │   └── nginx-reverse-proxy.conf  # Nginx reverse proxy configuration
 ├── docs/
 │   ├── setup-guide.md            # Step-by-step setup instructions
-├── screenshots/                  # Lab evidence and validation captures
+│   └── screenshots/              # Lab evidence and validation captures
 └── .gitignore
 ```
 
@@ -176,3 +176,4 @@ Access logs reviewed using `tail -f` on the proxy VM. Logs capture client IP, HT
 
 **Adrian Fonseca**
 [LinkedIn](https://linkedin.com/in/afc2806) · [GitHub](https://github.com/ODR3N) · [Portfolio](https://odr3n.github.io)
+
